@@ -1,0 +1,33 @@
+﻿// //딜러가 섞고
+           // //딜러가 만들어진 시점에서 카드 셔플 을 하느냐
+           // //만들고 난후 따로 하느냐 dealer.Prepare();
+           // Dealer dealer = new Dealer();
+
+           // List<Card> cards = new List<Card>();
+           // for (int i = 0; i < 20; i++)
+           // {
+           //     Card card = dealer.DrawCard();
+           //     cards.Add(card);
+           // }
+
+           // int kwangCount = 0;
+           // //for (int i = 0; i < cards.Count; i++)
+           // //{
+           // //    if (cards[i].IsKwang)
+           // //        kwangCount++;
+           // //}
+
+           // foreach (Card card in cards)
+           //     if (card.IsKwang)
+           //         kwangCount++;
+
+           //// Card c1 = dealer.DrawCard();
+
+           // //배팅 한 돈들(플레이어에게서)을 딜러에게
+           //// dealer.PutMoney(100);
+            
+
+
+           // //딴돈은 승자에게 회수.
+           // //dealer.GetMoney();
+           //// int prize = dealer.GetMoney();
