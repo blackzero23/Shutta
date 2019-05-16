@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shutta
 {
-    class Program
+    class Program 
     {
         public const int SeedMoney = 500;
         private const int BettingMoney = 100;
