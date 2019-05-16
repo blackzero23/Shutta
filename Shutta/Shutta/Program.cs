@@ -142,16 +142,13 @@ namespace Shutta
             int[] score = new int[players.Count()];
             int[] ranking = Enumerable.Repeat(1, players.Count()).ToArray<int>();
             
-
             for (int i = 0; i < players.Count(); i++)
             {
                 score[i] = players[i].CaculateScore();
             }
 
-           
             //조건. 1등에 다 등수가 같을 경우 같은 애들 2명 리스트로 담아서 반환.
 
-           
             //등수 구함.
             for (int i = 0; i < players.Count(); i++)
             {
@@ -161,8 +158,7 @@ namespace Shutta
             }
 
             //1등 체크
-            //int[] commonFirst;
-           // int commonNumberOne = 0;
+           
             List<Player> NumberOnePlayer = new List<Player>();
             for (int i = 0; i < players.Count(); i++)
             {
