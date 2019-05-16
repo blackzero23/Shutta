@@ -17,8 +17,12 @@ namespace Shutta
             int input = int.Parse(Console.ReadLine());
             RuleType rlueType = (RuleType)input;
 
+
+            //너무적은 금액은 못걸도록 해야됨 너무 오래감.
             Console.WriteLine("판돈 금액을 정하세요. 최대(1000원)");
             int BettingMoney = int.Parse(Console.ReadLine());
+            
+
 
             //오버라이드를 쓰는 전형적인 패턴
             List<Player> players = new List<Player>();
@@ -82,7 +86,10 @@ namespace Shutta
                         Console.WriteLine(" 무승부! ");
                         Console.WriteLine("-승자들 끼리 다시 승부-");
 
-                        Dealer SecondDealer = new Dealer();
+                        //무승부를 위한 딜러..
+                        //시간 되면 딜러 자체 클래스 재조정. 
+
+                        Dealer SecondDealer = new Dealer(); 
 
                         foreach (var player in winner)
                         {
