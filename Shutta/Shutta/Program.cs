@@ -26,9 +26,9 @@ namespace Shutta
             for (int i = 0; i < 4; i++)
             {
                 if (rlueType == RuleType.Basic)
-                    players.Add(new BasicPlayer());
+                    players.Add(new BasicPlayer(i));
                 else
-                    players.Add(new SimplePlayer());
+                    players.Add(new SimplePlayer(i));
             }
 
 
@@ -70,27 +70,27 @@ namespace Shutta
                         player.Cards.Add(dealer.DrawCard());
                     Console.WriteLine(player.GetCardText());
                 }
-                // DealtCard(players, dealer);
-
-
-
+              
                 //승자 찾기
                 List<Player> winner = FindWinner(players);
 
-                //무승부라면.
+                //무승부라면. 체크.
                 while (true)
                 {
                     if (winner.Count() >= 2)
                     {
                         Console.WriteLine(" 무승부! ");
                         Console.WriteLine("-승자들 끼리 다시 승부-");
+
+                        Dealer SecondDealer = new Dealer();
+
                         foreach (var player in winner)
                         {
                             player.Cards.Clear(); //카드 초기화.
-
+                            
                             //카드 세장씩.
                             for (int i = 0; i < 3; i++)
-                                player.Cards.Add(dealer.DrawCard());
+                                player.Cards.Add(SecondDealer.DrawCard());
                             Console.WriteLine(player.GetCardText());
                         }
 
@@ -105,13 +105,11 @@ namespace Shutta
 
                 //각 플레이어의 돈 출력.
                 Console.WriteLine("-----------------------");
-                foreach (var player in players)
-                    Console.WriteLine(player.Money + "\t");
+                foreach (var player in players)                   
+                    Console.WriteLine(player.PlayerName +" : "
+                        +player.Money + "\t");
                 Console.WriteLine();
             }
-
-
-
 
         }
 
@@ -141,7 +139,6 @@ namespace Shutta
             for (int i = 0; i < players.Count(); i++)
             {
                 score[i] = players[i].CaculateScore();
-
             }
 
            
