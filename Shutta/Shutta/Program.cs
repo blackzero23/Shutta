@@ -21,7 +21,7 @@ namespace Shutta
             //오버라이드를 쓰는 전형적인 패턴
             List<Player> players = new List<Player>();
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (rlueType == RuleType.Basic)
                     players.Add(new BasicPlayer());
@@ -89,14 +89,27 @@ namespace Shutta
 
         private static Player FindWinner(List<Player> players)
         {
-            int score0 = players[0].CaculateScore();
-            int score1 = players[1].CaculateScore();
+            int[] score = new int[4];
 
-            //무승부 구현 해야됨.
-            if (score0 > score1)
-                return players[0];
-            else
-                return players[1];
+            for (int i = 0; i < 4; i++)
+            {
+                score[i] = players[i].CaculateScore();
+
+            }
+            
+            
+            int idx = 0;
+            for (int i = 0; i < (score.Length)-1; i++)
+            {
+                if (score[i] < score[i + 1])
+                {
+                   
+                    idx = i + 1;
+                    
+                }
+
+            }
+            return players[idx];
 
         }
 
