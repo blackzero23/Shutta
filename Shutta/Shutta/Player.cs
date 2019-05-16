@@ -8,7 +8,6 @@ namespace Shutta
 {
     abstract public class Player
     {
-
         //자동 프로퍼티 auto property
         //card 클래스 내에서만 변경 가능.
         //카드 2장.
