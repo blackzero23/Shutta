@@ -11,12 +11,12 @@ namespace Shutta
         #region money
         private int _money = 0;//안적어줘도 자동 0으로 초기화.
 
-        internal void PutMoney(int bettingMoney)
+        public void PutMoney(int bettingMoney)
         {
             _money += bettingMoney;           
         }
 
-        internal int GetMoney()
+        public int GetMoney()
         {
             int moneyToReturn = _money;
             _money = 0;
