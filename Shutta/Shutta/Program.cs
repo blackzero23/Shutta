@@ -16,16 +16,19 @@ namespace Shutta
             Console.WriteLine("룰 타입을 선택하세요. (1:Basic 2:Simple)");
             int input = int.Parse(Console.ReadLine());
             RuleType rlueType = (RuleType)input;
+            Console.WriteLine(" ");
 
 
             //너무적은 금액은 못걸도록 해야됨 너무 오래감.
             Console.WriteLine("판돈 금액을 정하세요. 최대(1000원)");
             int BettingMoney = int.Parse(Console.ReadLine());
+            Console.WriteLine(" ");
             
-
-
-
-           
+            /*
+            Console.WriteLine("몇 명이 플레이합니까?");
+            int PlayerNumber = int.Parse(Console.ReadLine());
+            Console.WriteLine(" ");
+            */
 
             //오버라이드를 쓰는 전형적인 패턴
             List<Player> players = new List<Player>();
@@ -45,10 +48,10 @@ namespace Shutta
             int round = 1;
 
             int keepBattingMoney = 0;
-            while (true)
+           
 
             //딜러 매 라운드마다 만드는걸로.
-            Dealer dealer = new Dealer();
+           
 
             while (true)
             {
@@ -59,15 +62,15 @@ namespace Shutta
                 Console.WriteLine($"Round {round}");
                 round++;
 
-                dealer.initCard();
-
+                 Dealer dealer = new Dealer();
+               // dealer.initCard();
 
                 //학교 출석
                 foreach (var player in players)
                 {
                     player.Money -= BettingMoney;
-                    dealer.PutMoney(BettingMoney + keepBattingMoney);
-                    keepBattingMoney = 0;
+                    dealer.PutMoney(BettingMoney);
+                    
                 }
 
                 //카드 돌리기.
@@ -90,8 +93,12 @@ namespace Shutta
                 {
                     if (winner.Count() >= 2)
                     {
+                        
+                        Console.WriteLine(" ");
                         Console.WriteLine(" 무승부! ");
                         Console.WriteLine("-승자들 끼리 다시 승부-");
+                        Console.WriteLine(" ");
+                        Console.WriteLine("재승부-------------------");
 
                         //무승부를 위한 딜러..
                         //시간 되면 딜러 자체 클래스 재조정. 
@@ -118,10 +125,10 @@ namespace Shutta
                 winner[0].Money += dealer.GetMoney();
 
                 //각 플레이어의 돈 출력.
-                Console.WriteLine("-----------------------");
+                Console.WriteLine("-------------------------");
                 foreach (var player in players)                   
                     Console.WriteLine(player.PlayerName +" : "
-                        +player.Money + "\t");
+                        +  player.Money.ToString("#,##0").PadLeft(10) + "원");
                 Console.WriteLine();
                 
             }
