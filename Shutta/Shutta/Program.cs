@@ -40,12 +40,11 @@ namespace Shutta
                     player.Money = SeedMoney;
 
             int round = 1;
-
-            int keepBattingMoney = 0;
+                       
             while (true)
             {
                 //한명이 오링이 면 게임 종료
-                if (isAnyoneOring(players))                  
+                if (isAnyoneOring(players))
                     break;
 
                 Console.WriteLine($"Round {round}");
@@ -56,70 +55,85 @@ namespace Shutta
                 Dealer dealer = new Dealer();
 
                 //학교 출석
-                foreach (var player in players)
-                {
-                    player.Money -= BettingMoney;
-                    dealer.PutMoney(BettingMoney + keepBattingMoney);
-                    keepBattingMoney = 0;
-                }
+                Batting(BettingMoney, players, dealer);
 
                 //카드 돌리기.
 
-                foreach (var player in players)
-                {
-                    player.Cards.Clear(); //카드 초기화.
+                DrawCard(players, dealer);
 
-                    //카드 세장씩.
-                    for (int i = 0; i < 3; i++)
-                        player.Cards.Add(dealer.DrawCard());
-                    Console.WriteLine(player.GetCardText());
-                }
-              
                 //승자 찾기
                 List<Player> winner = FindWinner(players);
 
                 //무승부라면. 체크.
-                while (true)
-                {
-                    if (winner.Count() >= 2)
-                    {
-                        Console.WriteLine(" 무승부! ");
-                        Console.WriteLine("-승자들 끼리 다시 승부-");
-
-                        //무승부를 위한 딜러..
-                        //시간 되면 딜러 자체 클래스 재조정. 
-
-                        Dealer SecondDealer = new Dealer(); 
-
-                        foreach (var player in winner)
-                        {
-                            player.Cards.Clear(); //카드 초기화.
-                            
-                            //카드 세장씩.
-                            for (int i = 0; i < 3; i++)
-                                player.Cards.Add(SecondDealer.DrawCard());
-                            Console.WriteLine(player.GetCardText());
-                        }
-
-                        winner = FindWinner(winner);
-                    }
-                    else
-                        break;
-                }               
+                winner = CheckCommonWinners(winner);
+                
                 //승자에게 상금 주기
-
                 winner[0].Money += dealer.GetMoney();
 
                 //각 플레이어의 돈 출력.
                 Console.WriteLine("-----------------------");
-                foreach (var player in players)                   
-                    Console.WriteLine(player.PlayerName +" : "
-                        +player.Money + "\t");
+                foreach (var player in players)
+                    Console.WriteLine(player.PlayerName + " : "
+                        + player.Money + "\t");
                 Console.WriteLine();
             }
 
         }
 
+        private static List<Player> CheckCommonWinners(List<Player> winner)
+        {
+            while (true)
+            {
+                if (winner.Count() >= 2)
+                {
+                    Console.WriteLine(" 무승부! ");
+                    Console.WriteLine("-승자들 끼리 다시 승부-");
+
+                    //무승부를 위한 딜러..
+                    //시간 되면 딜러 자체 클래스 재조정. 
+
+                    Dealer SecondDealer = new Dealer();
+
+                    foreach (var player in winner)
+                    {
+                        player.Cards.Clear(); //카드 초기화.
+
+                        //카드 세장씩.
+                        for (int i = 0; i < 3; i++)
+                            player.Cards.Add(SecondDealer.DrawCard());
+                        Console.WriteLine(player.GetCardText());
+                    }
+
+                    winner = FindWinner(winner);
+                }
+                else
+                    break;
+            }
+
+            return winner;
+        }
+
+        private static void DrawCard(List<Player> players, Dealer dealer)
+        {
+            foreach (var player in players)
+            {
+                player.Cards.Clear(); //카드 초기화.
+
+                //카드 세장씩.
+                for (int i = 0; i < 3; i++)
+                    player.Cards.Add(dealer.DrawCard());
+                Console.WriteLine(player.GetCardText());
+            }
+        }
+
+        private static void Batting(int BettingMoney, List<Player> players, Dealer dealer)
+        {
+            foreach (var player in players)
+            {
+                player.Money -= BettingMoney;
+                dealer.PutMoney(BettingMoney);
+            }
+        }
 
         private static void DealtCard(List<Player> players,Dealer dealer)
         {
