@@ -10,13 +10,13 @@ namespace Shutta
     {
         public override int CaculateScore()
         {
-                if (Cards[0].IsKwang && Cards[1].IsKwang)
-                    return Cards[0].Number + 20;
-                else if (Cards[0].Number == Cards[1].Number)
-                    return Cards[0].Number + 10; //11 ~20;
-                else
-                    return (Cards[0].Number + Cards[1].Number) % 10;
-                //3~9
+            if (Cards[0].IsKwang && Cards[1].IsKwang)
+                return Cards[0].Number + 20;
+            else if (Cards[0].Number == Cards[1].Number)
+                return Cards[0].Number + 10; //11 ~20;
+            else
+                return (Cards[0].Number + Cards[1].Number) % 10;
+            //3~9
             
         }
     }

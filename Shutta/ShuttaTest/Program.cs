@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shutta;
 
-namespace Shutta
+namespace ShuttaTest
 {
-    
-    class Program 
+    class Program
     {
-        public const int SeedMoney = 500;
-        private const int BettingMoney = 100;
+        private const int SeedMoney = 1000;
         private const int MaxPlayer = 4;
-
+        
         static void Main(string[] args)
         {
+
             List<Player> players = new List<Player>();
 
             //PlayerSetup()
@@ -35,92 +29,40 @@ namespace Shutta
                 }
             }
 
-            int round = 1;
-            while(true)
+            Dealer dealer = new Dealer();
+
+            PutPlayerInCards(dealer, players);
+            foreach (var player in players)
+                CheckPae(player);
+
+            for (int i = 0; i < 4; i++)
             {
-                //한명이 오링이 면 게임 종료
-                if (isAnyoneOring(players))
-                    break;
-
-                Console.WriteLine($"Round {round}" );
-                round++;
-
-
-                //딜러 매 라운드마다 만드는걸로.
-                Dealer dealer = new Dealer();
-
-                PutPlayerInCards(dealer, players);
-                foreach (var player in players)
-                    CheckPae(player);
-
-                //학교 출석
-                foreach (var player in players)
+                for (int j = 0; j < 3; j++)
                 {
-                    player.Money -= BettingMoney;
-                    dealer.PutMoney(BettingMoney);
+                    Console.WriteLine(players[i].Cards[j].Number);
+                    //Console.WriteLine(players[i].Results[j]);
                 }
-
-               
-                //카드 돌리기.
-                foreach (var player in players)
+                for (int j = 0; j < 3; j++)
                 {
-
-                    player.Cards.Clear(); //카드 초기화.
-
-                    //카드 두장씩.
-
-                        for (int i = 0; i < 3; i++)
-                        {                 
-                            player.Cards.Add(dealer.DrawCard());
-                        }
-                                
-
-                    Console.WriteLine(player.GetCardText());
+                    //Console.WriteLine(players[i].Cards[j].Number);
+                    Console.WriteLine(players[i].Results[j]);
                 }
-
-
-                //승자 찾기
-                Player winner = FindWinner(players);
-
-                //승자에게 상금 주기
-                winner.Money += dealer.GetMoney();
-
-
-                //각 플레이어의 돈 출력.
-                Console.WriteLine("-----------------------");
-                foreach (var player in players)
-                    Console.WriteLine(player.Money + "\t");
                 Console.WriteLine();
             }
 
+            //Player winner = FindWinner(players);
 
 
-
-        }
-
-
-        private static Player FindWinner(List<Player> players)
-        {
-
-           
-            //무승부 구현 해야됨.
-            if (score0 > score1)
-                return players[0];
-            else
-                return players[1];
-
-
+            ;
+            /*
+            while (true)
+            {
+                
+            }
+            */
 
         }
 
-        private static bool isAnyoneOring(List<Player> players)
-        {
-            foreach (Player player in players)
-                if (player.Money == 0)
-                    return true;
-
-            return false;
-        }
 
         private static void PutPlayerInCards(Dealer dealer, List<Player> players)
         {
@@ -244,7 +186,7 @@ namespace Shutta
                     }
                 }
 
-                else if ((player.Cards[i].Number % 10) == 1 || (player.Cards[j].Number % 10) == 1)
+                else if((player.Cards[i].Number % 10) == 1 || (player.Cards[j].Number % 10) == 1)
                 {
                     player.Levels[cnt] = 6;
                     player.Scores[cnt] = (player.Cards[i].Number + player.Cards[j].Number) % 10;
@@ -277,7 +219,7 @@ namespace Shutta
                     }
                 }
 
-                else if ((player.Cards[i].Number % 10) == 4 || (player.Cards[j].Number % 10) == 4)
+                else if((player.Cards[i].Number % 10) == 4 || (player.Cards[j].Number % 10) == 4)
                 {
                     player.Levels[cnt] = 5;
                     player.Scores[cnt] = (player.Cards[i].Number + player.Cards[j].Number) % 10;
@@ -318,7 +260,8 @@ namespace Shutta
 
                 ++cnt;
             }
-
+            
         }
+
     }
 }

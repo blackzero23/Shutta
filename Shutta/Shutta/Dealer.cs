@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,31 +30,28 @@ namespace Shutta
 
         private int _cardIndex; //0 으로 카드 초기화
 
+
         public Card DrawCard()
         {
-            //Card card = _cards[_cardIndex];
-            //_cardIndex++;
-            //return card;
-            return _cards[_cardIndex++];
+            Card card = _cards[_cardIndex++];
+
+            return card;
+            
         }
 
         public Dealer()
         {
-            
-            for (int i = 1; i <= 10; i++) //범위 상수를 설정할때 생각.
+
+            for (int number = 1; number <= 20; number++)
             {
-                for (int j = 0; j < 2; j++)
-                {
-                    bool isKwang = (j ==0) && (i==1 || i ==3 || i == 8);
-                    Card card = new Card(i,isKwang);
-                    _cards.Add(card);
-                }
+
+                Card card = new Card(number);
+                _cards.Add(card);
+
+
             }
-
-            //람다식으로 셔플함.
-             _cards = _cards.OrderBy(x => Guid.NewGuid()).ToList();
-
+            _cards = _cards.OrderBy(x => Guid.NewGuid()).ToList();
         }
-      
+
     }
 }

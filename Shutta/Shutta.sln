@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shutta", "Shutta\Shutta.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shutta.UnitTest", "Shutta.UnitTest\Shutta.UnitTest.csproj", "{CD400318-9594-4DBF-B5BA-7274C22BDDB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuttaTest", "ShuttaTest\ShuttaTest.csproj", "{47EA9596-1263-4451-A062-0E85675B9AA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shutta5", "..\..\Shutta\Shutta\Shutta5.csproj", "{6FFF23F2-D0AC-4053-92F6-C866106D0703}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{CD400318-9594-4DBF-B5BA-7274C22BDDB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD400318-9594-4DBF-B5BA-7274C22BDDB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD400318-9594-4DBF-B5BA-7274C22BDDB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47EA9596-1263-4451-A062-0E85675B9AA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47EA9596-1263-4451-A062-0E85675B9AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47EA9596-1263-4451-A062-0E85675B9AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47EA9596-1263-4451-A062-0E85675B9AA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FFF23F2-D0AC-4053-92F6-C866106D0703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FFF23F2-D0AC-4053-92F6-C866106D0703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FFF23F2-D0AC-4053-92F6-C866106D0703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FFF23F2-D0AC-4053-92F6-C866106D0703}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
