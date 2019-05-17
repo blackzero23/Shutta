@@ -19,23 +19,12 @@ namespace Shutta
         //prop + tap
         public int Number { get; }//생성자에서만 변경가능
 
-        //card 클래스 내에서만 변경 가능.
-        public bool IsKwang { get; private set; }
-
 
         //ctor + tap 생성자 
-        public Card(int number, bool isKwang)
+        public Card(int number)
         {
             Number = number;
-            IsKwang = isKwang;
         }
 
-        public override string ToString()
-        {
-            if (IsKwang)
-                return Number + "K";
-            else
-                return Number.ToString();
-        }
     }
 }

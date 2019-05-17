@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shutta
 {
-    abstract public class Player
+    public class Player
     {
        
 
@@ -22,6 +22,27 @@ namespace Shutta
         //맴버의 값을 못바꾸고 추가할수없다는 말은아니다.
         //Add(new )카능.
 
+        public List<Card> Cards { get; set; }
+        public List<string> Results { get; set; }
+
+        public List<int> Scores { get; set; }
+
+        public List<int> Levels { get; set; }
+
+        public int Money { get; set; }
+
+        public Player()
+        {
+            Cards = new List<Card>();
+            Results = new List<string>();
+            Scores = new List<int>();
+            Levels = new List<int>();
+
+        }
+
+        /// <summary>
+        /// //
+        /// </summary>
         public String PlayerName { get; }
 
         public List<Card> Cards { get; } 
