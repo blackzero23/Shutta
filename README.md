@@ -1,7 +1,7 @@
-# Shutta 게임
+# Shutta 게임(VER 2.0) / 20190517
 Team MiniProject
 
-VER 2.0;
+
 
 기능 추가 사항.
 
