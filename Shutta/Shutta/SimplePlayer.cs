@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shutta
 {
-    class SimplePlayer :Player
+    public class SimplePlayer :Player
     {
         public override int CaculateScore()
         {

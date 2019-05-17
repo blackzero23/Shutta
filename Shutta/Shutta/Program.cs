@@ -8,14 +8,17 @@ namespace Shutta
 {
     class Program
     {
-        public const int SeedMoney = 500;
-        private const int BettingMoney = 100;
+        public const int SeedMoney = 10000;
+        //private const int BettingMoney = 100;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("룰 타입을 선택하세요. (1:Basic 2:Simple");
+            Console.WriteLine("룰 타입을 선택하세요. (1:Basic 2:Simple)");
             int input = int.Parse(Console.ReadLine());
             RuleType rlueType = (RuleType)input;
+
+            Console.WriteLine("판돈 금액을 정하세요. 최대(1000원)");
+            int BettingMoney = int.Parse(Console.ReadLine());
 
            
 
@@ -36,6 +39,9 @@ namespace Shutta
 
             int round = 1;
 
+            int keepBattingMoney = 0;
+            while (true)
+
             //딜러 매 라운드마다 만드는걸로.
             Dealer dealer = new Dealer();
 
@@ -45,7 +51,9 @@ namespace Shutta
                 if (isAnyoneOring(players))
                     break;
 
-                Console.WriteLine($"Round {round}" );
+
+
+                Console.WriteLine($"Round {round}");
                 round++;
 
                 dealer.initCard();
@@ -55,7 +63,8 @@ namespace Shutta
                 foreach (var player in players)
                 {
                     player.Money -= BettingMoney;
-                    dealer.PutMoney(BettingMoney);
+                    dealer.PutMoney(BettingMoney + keepBattingMoney);
+                    keepBattingMoney = 0;
                 }
 
                 //카드 돌리기.
@@ -74,6 +83,14 @@ namespace Shutta
 
                 //승자 찾기
                 Player winner = FindWinner(players);
+
+                //무승부라면.
+                if (winner == null)
+                {
+                    Console.WriteLine("무승부!"+"\n");
+                    keepBattingMoney += dealer.GetMoney();
+                    continue;
+                }
 
                 //승자에게 상금 주기
                 winner.Money += dealer.GetMoney();
@@ -94,6 +111,7 @@ namespace Shutta
 
         private static Player FindWinner(List<Player> players)
         {
+
             int[] score = new int[4];
 
             for (int i = 0; i < 4; i++)
@@ -122,6 +140,7 @@ namespace Shutta
 
             }
             return players[idx];
+
 
         }
 
