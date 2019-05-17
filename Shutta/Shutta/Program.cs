@@ -17,6 +17,7 @@ namespace Shutta
             int input = int.Parse(Console.ReadLine());
             RuleType rlueType = (RuleType)input;
 
+           
 
             //오버라이드를 쓰는 전형적인 패턴
             List<Player> players = new List<Player>();
@@ -34,7 +35,11 @@ namespace Shutta
                     player.Money = SeedMoney;
 
             int round = 1;
-            while(true)
+
+            //딜러 매 라운드마다 만드는걸로.
+            Dealer dealer = new Dealer();
+
+            while (true)
             {
                 //한명이 오링이 면 게임 종료
                 if (isAnyoneOring(players))
@@ -43,9 +48,8 @@ namespace Shutta
                 Console.WriteLine($"Round {round}" );
                 round++;
 
+                dealer.initCard();
 
-                //딜러 매 라운드마다 만드는걸로.
-                Dealer dealer = new Dealer();
 
                 //학교 출석
                 foreach (var player in players)
@@ -80,6 +84,7 @@ namespace Shutta
                 foreach (var player in players)
                     Console.WriteLine(player.Money + "\t");
                 Console.WriteLine();
+                
             }
 
 
@@ -105,6 +110,13 @@ namespace Shutta
                 {
                    
                     idx = i + 1;
+                    
+                }
+
+                else if(score[i] == score[i+1])
+                {
+                    Console.WriteLine("^ ㅇ^?");
+                    Console.WriteLine("^ㅇ ^!");
                     
                 }
 

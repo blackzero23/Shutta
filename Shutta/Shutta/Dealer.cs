@@ -54,6 +54,10 @@ namespace Shutta
              _cards = _cards.OrderBy(x => Guid.NewGuid()).ToList();
 
         }
-      
+
+        internal int initCard()
+        {
+            return _cardIndex = 0;
+        }
     }
 }
