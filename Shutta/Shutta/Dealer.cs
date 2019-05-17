@@ -31,9 +31,6 @@ namespace Shutta
 
         public Card DrawCard()
         {
-            //Card card = _cards[_cardIndex];
-            //_cardIndex++;
-            //return card;
             return _cards[_cardIndex++];
         }
 

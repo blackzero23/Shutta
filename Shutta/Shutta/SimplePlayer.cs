@@ -8,6 +8,10 @@ namespace Shutta
 {
     public class SimplePlayer :Player
     {
+        public SimplePlayer(int name) : base(name)
+        {
+        }
+
         public override int CaculateScore()
         {
             return Cards[0].Number+ Cards[1].Number;   

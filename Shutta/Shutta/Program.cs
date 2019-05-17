@@ -17,8 +17,13 @@ namespace Shutta
             int input = int.Parse(Console.ReadLine());
             RuleType rlueType = (RuleType)input;
 
+
+            //너무적은 금액은 못걸도록 해야됨 너무 오래감.
             Console.WriteLine("판돈 금액을 정하세요. 최대(1000원)");
             int BettingMoney = int.Parse(Console.ReadLine());
+            
+
+
 
            
 
@@ -28,9 +33,9 @@ namespace Shutta
             for (int i = 0; i < 4; i++)
             {
                 if (rlueType == RuleType.Basic)
-                    players.Add(new BasicPlayer());
+                    players.Add(new BasicPlayer(i));
                 else
-                    players.Add(new SimplePlayer());
+                    players.Add(new SimplePlayer(i));
             }
 
 
@@ -48,10 +53,8 @@ namespace Shutta
             while (true)
             {
                 //한명이 오링이 면 게임 종료
-                if (isAnyoneOring(players))
+                if (isAnyoneOring(players))                  
                     break;
-
-
 
                 Console.WriteLine($"Round {round}");
                 round++;
@@ -68,80 +71,111 @@ namespace Shutta
                 }
 
                 //카드 돌리기.
+
                 foreach (var player in players)
                 {
+                    player.Cards.Clear(); //카드 초기화.
 
-                player.Cards.Clear(); //카드 초기화.
-
-                 //카드 두장씩.
-                for (int i = 0; i < 2; i++)                
-                    player.Cards.Add(dealer.DrawCard());
-
-
-                    Console.WriteLine(  player.GetCardText());
+                    //카드 세장씩.
+                    for (int i = 0; i < 3; i++)
+                        player.Cards.Add(dealer.DrawCard());
+                    Console.WriteLine(player.GetCardText());
                 }
-
+              
                 //승자 찾기
-                Player winner = FindWinner(players);
+                List<Player> winner = FindWinner(players);
 
-                //무승부라면.
-                if (winner == null)
+                //무승부라면. 체크.
+                while (true)
                 {
-                    Console.WriteLine("무승부!"+"\n");
-                    keepBattingMoney += dealer.GetMoney();
-                    continue;
-                }
+                    if (winner.Count() >= 2)
+                    {
+                        Console.WriteLine(" 무승부! ");
+                        Console.WriteLine("-승자들 끼리 다시 승부-");
 
+                        //무승부를 위한 딜러..
+                        //시간 되면 딜러 자체 클래스 재조정. 
+
+                        Dealer SecondDealer = new Dealer(); 
+
+                        foreach (var player in winner)
+                        {
+                            player.Cards.Clear(); //카드 초기화.
+                            
+                            //카드 세장씩.
+                            for (int i = 0; i < 3; i++)
+                                player.Cards.Add(SecondDealer.DrawCard());
+                            Console.WriteLine(player.GetCardText());
+                        }
+
+                        winner = FindWinner(winner);
+                    }
+                    else
+                        break;
+                }               
                 //승자에게 상금 주기
-                winner.Money += dealer.GetMoney();
 
+                winner[0].Money += dealer.GetMoney();
 
                 //각 플레이어의 돈 출력.
                 Console.WriteLine("-----------------------");
-                foreach (var player in players)
-                    Console.WriteLine(player.Money + "\t");
+                foreach (var player in players)                   
+                    Console.WriteLine(player.PlayerName +" : "
+                        +player.Money + "\t");
                 Console.WriteLine();
                 
             }
 
+        }
 
 
+        private static void DealtCard(List<Player> players,Dealer dealer)
+        {
+            foreach (var player in players)
+            {
+                player.Cards.Clear(); //카드 초기화.
+
+                //카드 세장씩.
+                for (int i = 0; i < 3; i++)
+                    player.Cards.Add(dealer.DrawCard());
+                Console.WriteLine(player.GetCardText());
+            }
 
         }
 
-        private static Player FindWinner(List<Player> players)
+
+        private static List<Player> FindWinner(List<Player> players)
         {
 
-            int[] score = new int[4];
-
-            for (int i = 0; i < 4; i++)
+            int[] score = new int[players.Count()];
+            int[] ranking = Enumerable.Repeat(1, players.Count()).ToArray<int>();
+            
+            for (int i = 0; i < players.Count(); i++)
             {
                 score[i] = players[i].CaculateScore();
-
             }
-            
-            
-            int idx = 0;
-            for (int i = 0; i < (score.Length)-1; i++)
+
+            //조건. 1등에 다 등수가 같을 경우 같은 애들 2명 리스트로 담아서 반환.
+
+            //등수 구함.
+            for (int i = 0; i < players.Count(); i++)
             {
-                if (score[i] < score[i + 1])
-                {
-                   
-                    idx = i + 1;
-                    
-                }
-
-                else if(score[i] == score[i+1])
-                {
-                    Console.WriteLine("^ ㅇ^?");
-                    Console.WriteLine("^ㅇ ^!");
-                    
-                }
-
+                for (int j = 0; j < players.Count(); j++)               
+                    if (score[i] < score[j])
+                        ranking[i]++;              
             }
-            return players[idx];
 
+            //1등 체크
+           
+            List<Player> NumberOnePlayer = new List<Player>();
+            for (int i = 0; i < players.Count(); i++)
+            {
+                if (ranking[i] == 1)             
+                    NumberOnePlayer.Add(players[i]);
+            }
+      
 
+            return NumberOnePlayer;
         }
 
         private static bool isAnyoneOring(List<Player> players)
