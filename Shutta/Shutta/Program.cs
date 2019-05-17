@@ -59,6 +59,7 @@ namespace Shutta
                 if (isAnyoneOring(players))                  
                     break;
 
+
                 Console.WriteLine($"Round {round}");
                 round++;
 
