@@ -8,9 +8,8 @@ namespace Shutta
 {
     public enum RuleType
     {
-
-
         Basic = 1,
-        Simple
+        Simple,
+        Original
     }
 }

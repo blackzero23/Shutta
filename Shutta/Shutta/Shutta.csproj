@@ -46,6 +46,7 @@
     <Compile Include="BasicPlayer.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="Dealer.cs" />
+    <Compile Include="OriginalPlayer.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

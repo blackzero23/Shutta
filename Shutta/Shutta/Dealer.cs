@@ -36,19 +36,25 @@ namespace Shutta
 
         public Dealer()
         {
-            
-            for (int i = 1; i <= 10; i++) //범위 상수를 설정할때 생각.
+
+            for (int i = 1; i <= 20; i++) //범위 상수를 설정할때 생각.
             {
-                for (int j = 0; j < 2; j++)
-                {
-                    bool isKwang = (j ==0) && (i==1 || i ==3 || i == 8);
-                    Card card = new Card(i,isKwang);
-                    _cards.Add(card);
-                }
+                    Card card = new Card(i);
+                    _cards.Add(card); 
             }
 
+            //for (int i = 1; i <= 10; i++) //범위 상수를 설정할때 생각.
+            //{
+            //    for (int j = 0; j < 2; j++)
+            //    {
+            //        bool isKwang = (j ==0) && (i==1 || i ==3 || i == 8);
+            //        Card card = new Card(i,);
+            //        _cards.Add(card);
+            //    }
+            //}
+
             //람다식으로 셔플함.
-             _cards = _cards.OrderBy(x => Guid.NewGuid()).ToList();
+            _cards = _cards.OrderBy(x => Guid.NewGuid()).ToList();
 
         }
       

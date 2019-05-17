@@ -12,14 +12,10 @@ namespace Shutta
     class Program 
     {
         public const int SeedMoney = 10000;
-        //private const int BettingMoney = 100;
-
+        private const int MaxPlayer = 4;
+        
         static void Main(string[] args)
         {
-            Console.WriteLine("룰 타입을 선택하세요. (1:Basic 2:Simple)");
-            int input = int.Parse(Console.ReadLine());
-            RuleType rlueType = (RuleType)input;
-
 
             //너무적은 금액은 못걸도록 해야됨 너무 오래감.
             Console.WriteLine("판돈 금액을 정하세요. 최대(1000원)");
@@ -30,19 +26,15 @@ namespace Shutta
             //오버라이드를 쓰는 전형적인 패턴
             List<Player> players = new List<Player>();
 
-            for (int i = 0; i < 4; i++)
-            {
-                if (rlueType == RuleType.Basic)
-                    players.Add(new BasicPlayer(i));
-                else
-                    players.Add(new SimplePlayer(i));
-            }
-
             for (int i = 0; i < MaxPlayer; i++)
-                players.Add(new Player());
-
+            {               
+              players.Add(new OriginalPlayer(i));
+            }
+            
+            //초기화 ??
             foreach (var player in players)
             {
+                //초기 목돈.
                 player.Money = SeedMoney;
                 for (int i = 0; i < 3; i++)
                 {
@@ -63,13 +55,9 @@ namespace Shutta
                 Console.WriteLine($"Round {round}");
                 round++;
 
-
                 //딜러 매 라운드마다 만드는걸로.
                 Dealer dealer = new Dealer();
-
-                PutPlayerInCards(dealer, players);
-                foreach (var player in players)
-                    CheckPae(player);
+                              
 
                 //학교 출석
                 Batting(BettingMoney, players, dealer);
@@ -78,12 +66,33 @@ namespace Shutta
 
                 DrawCard(players, dealer);
 
-                //승자 찾기
-                List<Player> winner = FindWinner(players);
+
+                List<int> maxValueIndexs = new List<int>();
+                
+
+                
+
+                //승자 찾기                
+
+                for (int i = 0; i < players.Count(); i++)
+                {
+                    players[i].CaculateScore();
+                    maxValueIndexs.Add(FindMaxValueIndex(players[i]));
+                    Console.Write(players[i].PlayerName + " : ");
+                    Console.Write(players[i].Results[maxValueIndexs[i]]);
+                    Console.WriteLine(" : " + players[i].Scores[maxValueIndexs[i]]);
+                }
+
+                List<Player> winner = FindWinner(players, maxValueIndexs);
 
                 //무승부라면. 체크.
                 winner = CheckCommonWinners(winner);
-                
+
+
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("승자 "+ winner[0].PlayerName);
+                Console.WriteLine("-----------------------");
+
                 //승자에게 상금 주기
                 winner[0].Money += dealer.GetMoney();
 
@@ -94,6 +103,22 @@ namespace Shutta
                         + player.Money + "\t");
                 Console.WriteLine();
             }
+
+        }
+
+        private static int FindMaxValueIndex(Player player)
+        {
+            
+            int maxValueIndex = new int();
+            
+            for (int j = 0; j < 3; j++)
+            {
+                int k = (j + 1) % 3;
+                if (player.Scores[j] < player.Scores[k])
+                    maxValueIndex = k;
+            }
+
+            return maxValueIndex;
 
         }
 
@@ -111,6 +136,7 @@ namespace Shutta
 
                     Dealer SecondDealer = new Dealer();
 
+                   
                     foreach (var player in winner)
                     {
                         player.Cards.Clear(); //카드 초기화.
@@ -121,11 +147,20 @@ namespace Shutta
                         Console.WriteLine(player.GetCardText());
                     }
 
-                    winner = FindWinner(winner);
+                    List<int> maxValueIndexs = new List<int>();
+                    for (int i = 0; i<winner.Count();i++)
+                    {
+                        winner[i].CaculateScore();
+                        maxValueIndexs.Add(FindMaxValueIndex(winner[i]));
+                    }
+
+                    winner = FindWinner(winner, maxValueIndexs);
                 }
                 else
                     break;
             }
+
+     
 
             return winner;
         }
@@ -139,8 +174,11 @@ namespace Shutta
                 //카드 세장씩.
                 for (int i = 0; i < 3; i++)
                     player.Cards.Add(dealer.DrawCard());
-                Console.WriteLine(player.GetCardText());
+
+                Console.WriteLine(player.GetCardText());               
             }
+
+            Console.WriteLine("\n-----------------------\n");
         }
 
         private static void Batting(int BettingMoney, List<Player> players, Dealer dealer)
@@ -166,10 +204,9 @@ namespace Shutta
 
         }
 
-                //승자 찾기
-                Player winner = FindWinner(players);
+       
 
-        private static List<Player> FindWinner(List<Player> players)
+        private static List<Player> FindWinner(List<Player> players, List<int> maxValueIndexs)
         {
 
             int[] score = new int[players.Count()];
@@ -177,9 +214,10 @@ namespace Shutta
             
             for (int i = 0; i < players.Count(); i++)
             {
-                score[i] = players[i].CaculateScore();
+                score[i] = players[i].Scores[maxValueIndexs[i]];
             }
 
+            
             //조건. 1등에 다 등수가 같을 경우 같은 애들 2명 리스트로 담아서 반환.
 
             //등수 구함.
@@ -220,195 +258,6 @@ namespace Shutta
                 for (int i = 0; i < 3; i++)
                     player.Cards.Add(dealer.DrawCard());
             }
-        }
-
-        private static void CheckPae(Player player)
-        {
-            int cnt = 0;
-            for (int i = 0; i < 3; i++)
-            {
-                int j = (i + 1) % 3;
-
-                if ((player.Cards[i].Number == 3 && player.Cards[j].Number == 8) || (player.Cards[i].Number == 8 && player.Cards[j].Number == 3))
-                {
-                    player.Levels[cnt] = 10;
-                    player.Scores[cnt] = 30;
-                    player.Results[cnt] = "삼팔광땡";
-                }
-
-                else if ((player.Cards[i].Number == 4 && player.Cards[j].Number == 7) ||
-                         (player.Cards[i].Number == 7 && player.Cards[j].Number == 4))
-                {
-                    player.Levels[cnt] = 2;
-                    player.Results[cnt] = "암행어사";
-                }
-
-                else if (player.Cards[i].Number == 1 && (player.Cards[j].Number == 3 || player.Cards[j].Number == 8) || player.Cards[j].Number == 1 && (player.Cards[i].Number == 3 || player.Cards[i].Number == 8))
-                {
-                    player.Levels[cnt] = 9;
-                    player.Scores[cnt] = player.Cards[i].Number + player.Cards[j].Number;
-                    switch (player.Scores[cnt])
-                    {
-                        case 4:
-                            player.Scores[cnt] = 28;
-                            player.Results[cnt] = "일삼광땡";
-                            break;
-
-                        case 9:
-                            player.Scores[cnt] = 27;
-                            player.Results[cnt] = "일팔광땡";
-                            break;
-                    }
-
-                }
-
-                else if ((player.Cards[i].Number == 9 && player.Cards[j].Number == 4) || (player.Cards[i].Number == 4 && player.Cards[j].Number == 9))
-                {
-                    player.Levels[cnt] = 4;
-                    player.Scores[cnt] = 27;
-                    player.Results[cnt] = "멍텅구리 구사";
-                }
-
-                else if ((player.Cards[i].Number == 3 && player.Cards[j].Number == 7) || (player.Cards[i].Number == 7 && player.Cards[j].Number == 3))
-                {
-                    player.Levels[cnt] = 1;
-                    player.Results[cnt] = "땡잡이";
-                }
-
-                else if ((player.Cards[i].Number % 10) == (player.Cards[j].Number % 10))
-                {
-                    player.Levels[cnt] = 7;
-                    switch (player.Cards[i].Number % 10)
-                    {
-                        case 1:
-                            player.Scores[cnt] = 17;
-                            player.Results[cnt] = "일땡";
-                            break;
-
-                        case 2:
-                            player.Scores[cnt] = 18;
-                            player.Results[cnt] = "이땡";
-                            break;
-
-                        case 3:
-                            player.Scores[cnt] = 19;
-                            player.Results[cnt] = "삼땡";
-                            break;
-
-                        case 4:
-                            player.Scores[cnt] = 20;
-                            player.Results[cnt] = "사땡";
-                            break;
-
-                        case 5:
-                            player.Scores[cnt] = 21;
-                            player.Results[cnt] = "오땡";
-                            break;
-
-                        case 6:
-                            player.Scores[cnt] = 22;
-                            player.Results[cnt] = "육땡";
-                            break;
-
-                        case 7:
-                            player.Scores[cnt] = 23;
-                            player.Results[cnt] = "칠땡";
-                            break;
-
-                        case 8:
-                            player.Scores[cnt] = 24;
-                            player.Results[cnt] = "팔땡";
-                            break;
-
-                        case 9:
-                            player.Scores[cnt] = 25;
-                            player.Results[cnt] = "구땡";
-                            break;
-
-                        case 0:
-                            player.Levels[cnt] = 8;
-                            player.Scores[cnt] = 26;
-                            player.Results[cnt] = "장땡";
-                            break;
-
-                    }
-                }
-
-                else if ((player.Cards[i].Number % 10) == 1 || (player.Cards[j].Number % 10) == 1)
-                {
-                    player.Levels[cnt] = 6;
-                    player.Scores[cnt] = (player.Cards[i].Number + player.Cards[j].Number) % 10;
-                    switch (player.Scores[cnt])
-                    {
-                        case 3:
-                            player.Scores[cnt] = 15;
-                            player.Results[cnt] = "알리";
-                            break;
-
-                        case 5:
-                            player.Scores[cnt] = 14;
-                            player.Results[cnt] = "독사";
-                            break;
-
-                        case 0:
-                            player.Scores[cnt] = 13;
-                            player.Results[cnt] = "구삥";
-                            break;
-
-                        case 1:
-                            player.Scores[cnt] = 12;
-                            player.Results[cnt] = "장삥";
-                            break;
-
-                        default:
-                            player.Levels[cnt] = 0;
-                            player.Results[cnt] = player.Scores[cnt] + "끝";
-                            break;
-                    }
-                }
-
-                else if ((player.Cards[i].Number % 10) == 4 || (player.Cards[j].Number % 10) == 4)
-                {
-                    player.Levels[cnt] = 5;
-                    player.Scores[cnt] = (player.Cards[i].Number + player.Cards[j].Number) % 10;
-                    switch (player.Scores[cnt])
-                    {
-                        case 4:
-                            player.Scores[cnt] = 11;
-                            player.Results[cnt] = "장사";
-                            break;
-
-                        case 0:
-                            player.Scores[cnt] = 10;
-                            player.Results[cnt] = "세륙";
-                            break;
-
-                        case 3:
-                            player.Levels[cnt] = 3;
-                            player.Scores[cnt] = 16;
-                            player.Results[cnt] = "구사";
-                            break;
-
-                        default:
-                            player.Levels[cnt] = 0;
-                            player.Results[cnt] = player.Scores[cnt] + "끝";
-                            break;
-                    }
-                }
-
-                else
-                {
-                    player.Levels[cnt] = 0;
-                    player.Scores[cnt] = (player.Cards[i].Number + player.Cards[j].Number) % 10;
-                    player.Results[cnt] = player.Scores[cnt] + "끝";
-
-                    if (player.Scores[cnt] == 0)
-                        player.Results[cnt] = "망통";
-                }
-
-                ++cnt;
-            }
-
         }
     }
 }

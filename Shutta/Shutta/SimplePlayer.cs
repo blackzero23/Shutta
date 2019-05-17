@@ -12,9 +12,9 @@ namespace Shutta
         {
         }
 
-        public override int CaculateScore()
+        public override void CaculateScore()
         {
-            return Cards[0].Number+ Cards[1].Number;   
+            //return Cards[0].Number+ Cards[1].Number;   
         }
     }
 }

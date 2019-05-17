@@ -26,5 +26,19 @@ namespace Shutta
             Number = number;
         }
 
+
+        public override string ToString()
+        {
+
+            if (Number == 1 || Number == 3 || Number == 8)
+                return Number + "K";
+            else if (Number == 20)
+                return "10";
+            else if (Number > 10)
+                return (Number % 10).ToString();
+            else
+                return Number.ToString();
+        }
+
     }
 }
