@@ -12,38 +12,22 @@ namespace Shutta
     class Program 
     {
         public const int SeedMoney = 10000;
-        private const int MaxPlayer = 4;
+        private const int MaxPlayer = 2;
         
         static void Main(string[] args)
         {
 
-            //너무적은 금액은 못걸도록 해야됨 너무 오래감.
-            Console.WriteLine("판돈 금액을 정하세요. 최대(1000원)");
-            int BettingMoney = int.Parse(Console.ReadLine());
-            
+            Console.WriteLine("사용자 이름을 입력해주세요 : ");
+            string playerName = Console.ReadLine();
 
+            Dealer dealer = new Dealer();
+            int basicMoney = dealer.AskBasicMoney();                            
 
-            //오버라이드를 쓰는 전형적인 패턴
             List<Player> players = new List<Player>();
 
-            for (int i = 0; i < MaxPlayer; i++)
-            {               
-              players.Add(new OriginalPlayer(i));
-            }
-            
-            //초기화 ??
-            foreach (var player in players)
-            {
-                //초기 목돈.
-                player.Money = SeedMoney;
-                for (int i = 0; i < 3; i++)
-                {
-                    player.Levels.Add(0);
-                    player.Scores.Add(0);
-                    player.Results.Add("");
-                }
-            }
-
+            players.Add(new UserPlayer(playerName, SeedMoney));
+            players.Add(new AiPlayer("컴퓨터", SeedMoney));              
+                
             int round = 1;
                        
             while (true)
@@ -55,33 +39,58 @@ namespace Shutta
                 Console.WriteLine($"Round {round}");
                 round++;
 
-                //딜러 매 라운드마다 만드는걸로.
-                Dealer dealer = new Dealer();
-                              
+                StorageMoney betStorage = new StorageMoney(basicMoney);
 
-                //학교 출석
-                Batting(BettingMoney, players, dealer);
+                foreach (var player in players)
+                {
+                    player.Money -= basicMoney;
+                    betStorage.TakeBattingMoney(basicMoney);
+                 }
 
-                //카드 돌리기.
+                //첫 패돌리고
+                DrawCard(players, dealer, 2);
+                foreach (var player in players)
+                    player.GetCardText();
 
-                DrawCard(players, dealer);
-
-
+                //컴퓨터 의사 먼저 확인 배팅 확인. 컴퓨터는자신의 가장높은숫자와  사용자의 앞 패의 숫자랑만 비교한다.
+                //자신이 나올수 있는 가장 높은 점수. 와 앞패로 가질수있는 가장 높은 점수 계산해서 비교.
+                //예) 점수가 10높으면 콜 점수가 5높으면
+                //사용자 패를 보여주고 족보에 맞추어 계산한걸 보여준다.
+                //사용자 배팅 의사 확인.
                 List<int> maxValueIndexs = new List<int>();
-                
-
-                
-
-                //승자 찾기                
-
-                for (int i = 0; i < players.Count(); i++)
+                for (int i = 0; i < MaxPlayer; i++)
                 {
                     players[i].CaculateScore();
                     maxValueIndexs.Add(FindMaxValueIndex(players[i]));
-                    Console.Write(players[i].PlayerName + " : ");
-                    Console.Write(players[i].Results[maxValueIndexs[i]]);
-                    Console.WriteLine(" : " + players[i].Scores[maxValueIndexs[i]]);
                 }
+
+
+
+                ShowCard();
+                //패돌리고
+                DrawCard(players, dealer, 1);
+                //컴퓨터 의사 먼저 확인
+                //배팅콜?
+
+                //승자 찾고 무승부면 승자 나올때까지 게임 다시 .
+
+                //승자에게 돈지급.
+
+
+
+                //게임이 끝나면 각플레이더들 카드 초기화
+                foreach (var player in players)
+                    player.Cards.Clear();
+
+               
+
+                CardListInformation(players[0]);
+
+               
+
+                //승자 찾기                
+
+               
 
                 List<Player> winner = FindWinner(players, maxValueIndexs);
 
@@ -104,6 +113,25 @@ namespace Shutta
                 Console.WriteLine();
             }
 
+        }
+
+        private static void ShowCard(List<Player> players)
+        {
+            //1번째 는 나.
+
+            Console.WriteLine("\n-----------------------\n");
+            Console.WriteLine(players[0].GetCardTextALL());
+            Console.WriteLine(players[1].GetCardComText());
+            Console.WriteLine("\n-----------------------\n");
+        }
+
+        private static void CardListInformation(Player player)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine(player.Results[i] + " : " + player.Scores[i]);
+            }
+            
         }
 
         private static int FindMaxValueIndex(Player player)
@@ -165,46 +193,22 @@ namespace Shutta
             return winner;
         }
 
-        private static void DrawCard(List<Player> players, Dealer dealer)
-        {
+        private static void DrawCard(List<Player> players, Dealer dealer,int drawCardCnt)
+        {                       
             foreach (var player in players)
             {
-                player.Cards.Clear(); //카드 초기화.
-
-                //카드 세장씩.
-                for (int i = 0; i < 3; i++)
+                //player.Cards.Clear(); //카드 초기화.
+                for (int i = 0; i < drawCardCnt; i++)
                     player.Cards.Add(dealer.DrawCard());
-
-                Console.WriteLine(player.GetCardText());               
             }
 
-            Console.WriteLine("\n-----------------------\n");
         }
 
         private static void Batting(int BettingMoney, List<Player> players, Dealer dealer)
         {
-            foreach (var player in players)
-            {
-                player.Money -= BettingMoney;
-                dealer.PutMoney(BettingMoney);
-            }
+            
         }
 
-        private static void DealtCard(List<Player> players,Dealer dealer)
-        {
-            foreach (var player in players)
-            {
-                player.Cards.Clear(); //카드 초기화.
-
-                //카드 세장씩.
-                for (int i = 0; i < 3; i++)
-                    player.Cards.Add(dealer.DrawCard());
-                Console.WriteLine(player.GetCardText());
-            }
-
-        }
-
-       
 
         private static List<Player> FindWinner(List<Player> players, List<int> maxValueIndexs)
         {

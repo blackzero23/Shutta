@@ -6,21 +6,90 @@ using System.Threading.Tasks;
 
 namespace Shutta
 {
-    class OriginalPlayer : Player
+    abstract public class Player
     {
-        public OriginalPlayer(int name) : base(name)
+        protected List<Card> cards;
+
+        //List<Card> Cards;
+
+
+        public Player(int name)
         {
+            PlayerName = "Player" + name;
+            Cards = new List<Card>();
+            Results = new List<string>();
+            Scores = new List<int>();
+            Levels = new List<int>();
+
         }
 
-        public override void CaculateScore()
+        public Player(String name, int seedMoney)
+        {
+            PlayerName = "Player" + name;
+            Money = seedMoney;
+            Cards = new List<Card>();
+            Results = new List<string>();
+            Scores = new List<int>();
+            Levels = new List<int>();
+
+        }
+
+
+
+        //자동 프로퍼티 auto property
+        //card 클래스 내에서만 변경 가능.
+        //카드 2장.
+        //맴버의 값을 못바꾸고 추가할수없다는 말은아니다.
+        //Add(new )카능.
+
+        public List<Card> Cards { get => cards; set => cards = value; }
+
+        //족보 이름
+        public List<string> Results { get; set; }
+
+
+        // 족보 이름에 따른 점수
+        public List<int> Scores { get; set; }
+
+
+        // 족보 이르멩 따른 랭크(10~0)
+        public List<int> Levels { get; set; }
+
+        public int Money { get; set; }
+        
+
+        public String PlayerName { get; }
+
+       
+
+
+        public abstract String GetCardText(); //이거때문에 컴퓨터랑 나랑 찢어지는게 좋을듯.
+       
+
+        public String GetCardTextALL()
+        {
+            Console.Write(PlayerName + ": ");
+            StringBuilder builder = new StringBuilder();
+            foreach (var card in Cards)
+            {
+                builder.Append(card.ToString() + "\t");
+            }
+
+            return builder.ToString();
+        }
+
+        public void CaculateScore()
         {
             //3개의 숫자중족보를 토대로 가장 좋은 조건인 두개의 패를 조합해서 만듬.
             int cnt = 0;
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < Cards.Count(); i++)
             {
                 int j = (i + 1) % 3;
 
-                if ((Cards[i].Number == 3 && Cards[j].Number == 8) || (Cards[i].Number == 8 && Cards[j].Number == 3))
+                if ((Cards[i].Number == 3 && Cards[j].Number == 8)
+                    || (Cards[i].Number == 8 && Cards[j].Number == 3))
+
+                    
                 {
                     Levels[cnt] = 10;
                     Scores[cnt] = 30;
@@ -205,5 +274,8 @@ namespace Shutta
 
 
         }
+
+
+
     }
 }
